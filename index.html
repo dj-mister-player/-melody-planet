@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Melody Planet - DJ Mister + | 10 Tracce</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#05070f;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px}
+.planet-bg{position:fixed;inset:0;background:radial-gradient(ellipse at 50% -20%, #1a2a5a 0%, #0a0f24 40%, #05070f 100%);z-index:-2}
+.container{max-width:1100px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;margin-top:20px}
+@media(max-width:900px){.container{grid-template-columns:1fr}}
+
+.cover-wrap{position:relative;width:100%;max-width:400px;margin:0 auto;perspective:1200px}
+.vinyl{width:80%;aspect-ratio:1;background:radial-gradient(circle at 30% 30%, #2a3a7a, #0a0f24 60%);border-radius:50%;display:flex;justify-content:center;align-items:center;animation:spin 12s linear infinite;animation-play-state:paused;box-shadow:0 0 80px rgba(100,140,255,.3);margin:20px auto}
+.vinyl.playing{animation-play-state:running}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.vinyl-label{width:42%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle, #ffdf8a 0%, #ff9a3c 30%, #c94a1a 60%, #1a0a00 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;border:4px solid #111}
+.vinyl-label b{font-family:'Orbitron';font-size:10px;letter-spacing:1px;color:#000;text-align:center}
+
+.cover-box { width: 100%; aspect-ratio: 1; position: relative; transform-style: preserve-3d; transition: transform 0.8s; cursor: pointer; border-radius: 15px; }
+.cover-box.flipped { transform: rotateY(180deg); }
+.cover-box img { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; object-fit: cover; top: 0; left: 0; box-shadow: 0 20px 60px rgba(0,0,0,.8); }
+.cover-box img.back { transform: rotateY(180deg); }
+
+.flip-btn{margin:18px auto 0;display:block;background:transparent;border:1px solid rgba(255,255,255,.2);color:#8ab4ff;padding:8px 18px;border-radius:20px;font-size:12px;cursor:pointer}
+
+.player-card{background:rgba(255,255,255,.04);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:28px}
+.title{font-family:'Orbitron';font-size:22px;letter-spacing:2px}
+.subtitle{font-size:13px;opacity:.6;margin-bottom:24px}
+.track-name{font-size:18px;font-weight:600;margin-bottom:20px;min-height:28px;color:#8ab4ff}
+
+.controls{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.btn{width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.btn-play{background:#fff;color:#000;width:58px;height:58px;font-size:20px}
+.btn-side{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.12)}
+
+.progress-wrap{background:rgba(255,255,255,.08);height:6px;border-radius:10px;overflow:hidden;cursor:pointer;margin-bottom:8px}
+.progress{height:100%;background:linear-gradient(90deg,#8ab4ff,#b78cff);width:0%}
+.time{display:flex;justify-content:space-between;font-size:11px;opacity:.5;margin-bottom:26px}
+
+.tracklist{max-height:300px;overflow-y:auto;padding-right:4px}
+.tracklist::-webkit-scrollbar{width:4px}
+.tracklist::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.2);border-radius:4px}
+.track{padding:10px 12px;border-radius:10px;display:flex;gap:12px;cursor:pointer;margin-bottom:6px;align-items:center;transition:0.2s}
+.track:hover{background:rgba(255,255,255,.06)}
+.track.active{background:rgba(138,180,255,.15);color:#8ab4ff}
+.track-num{font-family:'Orbitron';font-size:11px;opacity:.4;width:22px}
+
+/* PayPal Box */
+.paypal-box { width:100%; max-width:1100px; margin: 40px auto 20px; padding: 30px; background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); text-align: center; }
+.btn-paypal { display:inline-block; margin:10px; padding:14px 28px; border-radius:30px; text-decoration:none; font-weight:bold; font-size:15px; transition:0.3s; }
+.btn-dona { background:#FFC439; color:#000; }
+.btn-buy { background:#fff; color:#000; border:2px solid #FFC439; }
+.btn-paypal:hover { transform:scale(1.05); }
+</style>
+</head>
+<body>
+
+<div class="planet-bg"></div>
+
+<div class="container">
+  <!-- COLONNA SINISTRA: Copertina e Vinile -->
+  <div style="text-align:center;">
+    <div class="vinyl" id="vinyl">
+      <div class="vinyl-label"><b>MELODY<br>PLANET</b><span>DJ MISTER +</span></div>
+    </div>
+    
+    <div class="cover-wrap">
+      <div class="cover-box" id="coverBox" onclick="this.classList.toggle('flipped')">
+        <img src="fronte.jpg" class="front" alt="Cover Fronte">
+        <img src="retro.jpg" class="back" alt="Cover Retro">
+      </div>
+      <button class="flip-btn" onclick="document.getElementById('coverBox').classList.toggle('flipped')">↻ GIRA COPERTINA</button>
+    </div>
+  </div>
+
+  <!-- COLONNA DESTRA: Player e Tracklist -->
+  <div class="player-card">
+    <div class="title">MELODY PLANET</div>
+    <div class="subtitle">Compilation by DJ Mister + - 10 Tracce</div>
+    <div class="track-name" id="trackName">Seleziona una traccia</div>
+    
+    <div class="controls">
+      <button class="btn btn-side" onclick="prev()">⏮</button>
+      <button class="btn btn-play" id="playBtn" onclick="toggle()">▶</button>
+      <button class="btn btn-side" onclick="next()">⏭</button>
+    </div>
+    
+    <div class="progress-wrap" onclick="seek(event)"><div class="progress" id="progress"></div></div>
+    <div class="time"><span id="cur">0:00</span><span id="dur">0:00</span></div>
+    
+    <div class="tracklist" id="list"></div>
+  </div>
+</div>
+
+<!-- BOX PAYPAL -->
+<div class="paypal-box">
+  <h2 style="font-family:'Orbitron'; font-size:1.4em; margin-bottom:10px;">💿 Supporta Melody Planet</h2>
+  <p style="color:#aaa; font-size:13px; margin-bottom:20px;">Scarica l'album completo o lascia un'offerta libera</p>
+
+  <a class="btn-paypal btn-buy" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=maurizio.palmacci@spidmail.it&item_name=Melody%20Planet%20-%20Album%20Completo&amount=20.00&currency_code=EUR" target="_blank">
+    💿 ACQUISTA ALBUM - 20€
+  </a>
+
+  <a class="btn-paypal btn-dona" href="https://www.paypal.com/donate/?business=maurizio.palmacci%40spidmail.it&no_recurring=0&currency_code=EUR" target="_blank">
+    💛 DONAZIONE LIBERA
+  </a>
+
+  <p style="font-size:11px; color:#666; margin-top:15px;">Pagamento sicuro con PayPal • Riceverai il link download via email dopo il pagamento</p>
+</div>
+
+<audio id="audio" preload="metadata"></audio>
+
+<script>
+// ESATTAMENTE LE TUE 10 TRACCE ORIGINALI
+const tracks = [
+  {f:"01 - Virtual Melody.mp3", t:"Virtual Melody"},
+  {f:"02 - Planet One.mp3", t:"Planet One"},
+  {f:"03 - Theory.mp3", t:"Theory"},
+  {f:"04 - west.mp3", t:"West"},
+  {f:"05 - Universe.mp3", t:"Universe"},
+  {f:"06 - Atlantide.mp3", t:"Atlantide"},
+  {f:"07 - MAXIMUS.mp3", t:"MAXIMUS"},
+  {f:"08 - Destination.mp3", t:"Destination"},
+  {f:"09 - Orbital.mp3", t:"Orbital"},
+  {f:"10 - Sonic Gravity.mp3", t:"Sonic Gravity"}
+];
+
+let idx = 0;
+const audio = document.getElementById('audio');
+const nameEl = document.getElementById('trackName');
+const progress = document.getElementById('progress');
+const playBtn = document.getElementById('playBtn');
+const vinyl = document.getElementById('vinyl');
+const cur = document.getElementById('cur');
+const dur = document.getElementById('dur');
+const list = document.getElementById('list');
+
+function render() {
+  list.innerHTML = tracks.map((tr, i) => `
+    <div class="track ${i === idx ? 'active' : ''}" onclick="playAt(${i})">
+      <div class="track-num">${String(i+1).padStart(2, '0')}</div>
+      <div style="flex-grow:1;">
+        <b>${tr.t}</b><br>
+        <span style="font-size:11px;opacity:.5">${tr.f}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function playAt(i) {
+  idx = i;
+  audio.src = encodeURI(tracks[i].f);
+  nameEl.textContent = tracks[i].t;
+  render();
+  audio.play().catch(e => console.log("Errore riproduzione:", e));
+}
+
+function toggle() {
+  if (!audio.src) return playAt(0);
+  if (audio.paused) audio.play();
+  else audio.pause();
+}
+
+function next() { playAt((idx + 1) % tracks.length); }
+function prev() { playAt((idx - 1 + tracks.length) % tracks.length); }
+
+function seek(e) {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  if(audio.duration) audio.currentTime = pct * audio.duration;
+}
+
+function fmt(s) {
+  if (isNaN(s)) return "0:00";
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60).toString().padStart(2, '0');
+  return `${m}:${sec}`;
+}
+
+audio.addEventListener('play', () => { playBtn.textContent = '⏸'; vinyl.classList.add('playing'); });
+audio.addEventListener('pause', () => { playBtn.textContent = '▶'; vinyl.classList.remove('playing'); });
+audio.addEventListener('timeupdate', () => {
+  progress.style.width = (audio.currentTime / audio.duration * 100 || 0) + '%';
+  cur.textContent = fmt(audio.currentTime);
+});
+audio.addEventListener('loadedmetadata', () => { dur.textContent = fmt(audio.duration); });
+audio.addEventListener('ended', next);
+
+render();
+</script>
+
+</body>
+</html>
